@@ -1,4 +1,4 @@
-baseURL = 'https://jeronimoluza.github.io'
+baseURL = 'https://jeronimoluza.github.io/'
 languageCode = 'en-us'
 title = 'Jeronimo Luza'
 theme = 'PaperMod'
