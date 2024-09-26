@@ -2,7 +2,7 @@ bbbaseURL: 'https://jeronimoluza.github.io/'
 languageCode: 'en-us'
 title: 'Jerónimo Luza'
 theme: 'PaperMod'
-
+googleAnalytics: G-E60RCDY598
 markup:
   goldmark:
     renderer:
