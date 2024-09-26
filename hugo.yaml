@@ -2,3 +2,47 @@ baseURL: 'https://jeronimoluza.github.io/'
 languageCode: 'en-us'
 title: 'Jeronimo Luza'
 theme: 'PaperMod'
+
+params:
+  defaultTheme: auto
+  ShowReadingTime: true
+  ShowCodeCopyButtons: true
+
+  homeInfoParams:
+    FirstParagraph: >
+      I am a GIS software developer and spatial data
+      scientist focusing on quantitative analysis in policy research,
+      leveraging cloud computing technologies and data science methods to facilitate
+      impact evaluations on social and environmental infrastructure projects.
+      While not working, I like to contribute to open source software, play sports, and doing fun stuff outside.
+    SecondParagraph: >
+      My career has been always focused on putting data and technology for the social good,
+      utilizing my skillset to study the impact of environmental events and infrastructure projects in Latin America.
+      I have participated in studies involving the impact of COVID-19 on mobility and transport,
+      urban-policy land use regulation impacts on informal housing settlements,
+      and I am currently working on studying the impact of hurricanes over economic and electricity service recovery.
+
+    Title: Jerónimo Luza
+    Photo: ""
+
+  socialIcons:
+    - name: email
+      url: "mailto:jero.luza@gmail.com"
+    - name: github
+      url: "https://github.com/jeronimoluza"
+    - name: linkedin
+      url: "https://www.linkedin.com/in/jluza/"
+
+menu:
+  main:
+    - name: Posts
+      pageRef: /posts/
+      weight: 2
+    - identifier: CV
+      name: CV
+      url: ""
+      weight: 4
+    - identifier: GitHub
+      name: GitHub
+      url: "https://github.com/jeronimoluza"
+      weight: 5
