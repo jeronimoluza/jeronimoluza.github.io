@@ -82,7 +82,7 @@ def get_bounding_coordinates(lat, lon, delta_lat, delta_lon):
     return Polygon([point0, point1, point2, point3])
 ```
 
-You can find a more detailed explanation of what this function does in [this notebook]().
+You can find a more detailed explanation of what this function does in [this notebook](https://github.com/jeronimoluza/pm2.5_extraction/blob/main/notebooks/example.ipynb).
 
 If we apply this function to every row in our dataframe, we will generate the next output:
 
@@ -135,7 +135,7 @@ _Hexagons over North America_
 ![Hexagons over Asia & Africa](./images/asia_africa_hexagons_pm25.png)
 _Hexagons over Asia & Africa_
 
-You can find all the code I used [in this repository](). There's also a script you can use to execute this process over a large number of files.
+You can find all the code I used [in this repository](https://github.com/jeronimoluza/pm2.5_extraction/tree/main). There's also a script you can use to execute this process over a large number of files.
 
 ## References
 
