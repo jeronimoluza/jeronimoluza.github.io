@@ -5,11 +5,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Posts | Jerónimo Luza</title>
+<title>Unifying Administrative Boundaries Datasets | Jerónimo Luza</title>
 <meta name="keywords" content="">
-<meta name="description" content="Posts - Jerónimo Luza">
+<meta name="description" content="In geospatial analysis, defining metrics for regions can be very important. For multilateral development organizations, these regions often include countries, states, provinces, districts, neighborhoods, and other nested subdivisions. Surprisingly, finding standardized administrative boundaries datasets for these areas can be a challenge.
+For national boundaries, the World Bank Data Catalog offers a good dataset, including names, ISO codes, GDP and population estimates, and classification levels for almost every country. However, finding similar subnational boundary data is less straightforward. While many sources provide level 1 and level 2 administrative boundaries, it’s rare to find data on subdivisions beyond these levels. The United Nations Office for the Coordination of Humanitarian Affairs (OCHA) offers one of the most comprehensive and reliable datasets for subnational boundaries available at the Humanitarian Data Exchange (HDX), covering levels 3 and 4 (and occasionally even level 5), though its coverage remains incomplete across all countries.">
 <meta name="author" content="">
-<link rel="canonical" href="//localhost:1313/posts/">
+<link rel="canonical" href="//localhost:1313/posts/working-on-administrative-boundaries-dataset/old/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="//localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="//localhost:1313/favicon-16x16.png">
@@ -18,8 +19,7 @@
 <link rel="mask-icon" href="//localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="//localhost:1313/posts/index.xml">
-<link rel="alternate" hreflang="en" href="//localhost:1313/posts/">
+<link rel="alternate" hreflang="en" href="//localhost:1313/posts/working-on-administrative-boundaries-dataset/old/">
 <noscript>
     <style>
         #theme-toggle,
@@ -59,7 +59,7 @@
 </noscript>
 </head>
 
-<body class="list" id="top">
+<body class="" id="top">
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.body.classList.add('dark');
@@ -101,7 +101,7 @@
         <ul id="menu">
             <li>
                 <a href="//localhost:1313/posts/" title="Posts">
-                    <span class="active">Posts</span>
+                    <span>Posts</span>
                 </a>
             </li>
             <li>
@@ -118,41 +118,30 @@
         </ul>
     </nav>
 </header>
-<main class="main"> 
-<header class="page-header">
-  <h1>
-    Posts
-  </h1>
-</header>
+<main class="main">
 
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Bypassing AWS Athena &#34;Query Exhausted Resources&#34; using H3 Hexagons
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>If you’re working with Amazon Web Services (AWS) Athena SQL, chances are that you’ve encountered the following error:
-Query exhausted resources at this scale factor
-This generally indicates that you are hitting memory limits on the Athena cluster that runs your query (reference 1, reference 2, reference 3). AWS provides several performance optimization strategies, including data optimization, query optimization, and data partitioning.
-One approach to bypassing Athena’s resource limitations for large geospatial queries is to break down complex spatial intersections into a series of cascading steps, using a multi-resolution approach. Rather than testing each line against all polygons at the highest spatial resolution, this method begins with a lower, coarser resolution, identifying only broad intersections. Once these spatial matches are found, they serve as a foundation for progressively refined checks at higher resolutions. This effectively narrows down the dataset at each step, reducing the number of intersections that need to be evaluated as the resolution increases.
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-10-17 16:25:52 -0400 EDT'>October 17, 2024</span>&nbsp;·&nbsp;3 min</footer>
-  <a class="entry-link" aria-label="post link to Bypassing AWS Athena &#34;Query Exhausted Resources&#34; using H3 Hexagons" href="//localhost:1313/posts/bypassing-athena-query-exhausted-resources/"></a>
-</article>
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Unifying Administrative Boundaries Datasets
+    </h1>
+    <div class="post-meta"><span title='2024-10-09 15:30:20 -0400 EDT'>October 9, 2024</span>&nbsp;·&nbsp;2 min
 
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Extract PM2.5 Pixels and Convert Them to H3 Hexagons
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>A few months ago I had the opportunity to work with the PM2.5 data provided by the Washington University in St. Louis.
-The initiative comprises a collection of estimated global and regional annual and monthly satellite-derived ground-level fine particulate matter (PM2.5) gridded datasets (Shen et al., 2024), spanning the years 1998 to 2022. This collection combines Aerosol Optical Depth (AOD) retrievals from NASA MODIS, MISR, and SeaWIFS, and is available at resolutions 0.01º x 0.01º and 0.1º x 0.1º. For more details and downloading information, visit Satellite-derived PM2.5.
-...</p>
+</div>
+  </header> 
+  <div class="post-content"><p>In geospatial analysis, defining metrics for regions can be very important. For multilateral development organizations, these regions often include countries, states, provinces, districts, neighborhoods, and other nested subdivisions. Surprisingly, finding standardized administrative boundaries datasets for these areas can be a challenge.</p>
+<p>For national boundaries, the <a href="https://datacatalog.worldbank.org/search/dataset/0038272/World-Bank-Official-Boundaries">World Bank Data Catalog</a> offers a good dataset, including names, ISO codes, GDP and population estimates, and classification levels for almost every country. However, finding similar subnational boundary data is less straightforward. While many sources provide level 1 and level 2 administrative boundaries, it’s rare to find data on subdivisions beyond these levels. The United Nations Office for the Coordination of Humanitarian Affairs (OCHA) offers one of the most comprehensive and reliable datasets for subnational boundaries available at the <a href="https://data.humdata.org/">Humanitarian Data Exchange (HDX)</a>, covering levels 3 and 4 (and occasionally even level 5), though its coverage remains incomplete across all countries.</p>
+<p>In response to requests from colleagues and departments at the Inter-American Development Bank (IDB), I began developing a unified, standardized database of national and subnational boundaries. While the IDB primarily focuses on Latin America and the Caribbean, finding a complete and unified source for administrative boundaries across all countries proved challenging. This project is the result of a dedicated effort to consolidate the best available data into a single, cohesive resource.</p>
+<p>I started by obtaining the <a href="https://datacatalogfiles.worldbank.org/ddh-published/0038272/DR0046659/wb_countries_admin0_10m.zip?versionId=2024-05-14T14:58:01.5696428Z">World Bank Official Boundaries dataset</a></p>
+
+
   </div>
-  <footer class="entry-footer"><span title='2024-09-18 20:45:52 -0400 EDT'>September 18, 2024</span>&nbsp;·&nbsp;4 min</footer>
-  <a class="entry-link" aria-label="post link to Extract PM2.5 Pixels and Convert Them to H3 Hexagons" href="//localhost:1313/posts/extract-pm25-pixels-and-convert-them-to-h3-hexagons/"></a>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
 </article>
     </main>
     
@@ -224,6 +213,53 @@ The initiative comprises a collection of estimated global and regional annual an
         }
     })
 
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
 </script>
 </body>
 

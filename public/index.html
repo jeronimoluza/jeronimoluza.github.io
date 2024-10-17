@@ -2,7 +2,7 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.134.3"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.136.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
@@ -125,7 +125,7 @@
         <h1></h1>
     </header>
     <div class="entry-content">
-        I am a GIS software developer and spatial data scientist focusing on quantitative analysis in policy research, leveraging cloud computing technologies and data science methods to facilitate impact evaluations on social and environmental infrastructure projects. While not working, I like to contribute to open source software, play sports, and doing fun stuff outside. <br /> <br /> My career has been always focused on putting data and technology for the social good, utilizing my skillset to study the impact of environmental events and infrastructure projects in Latin America. I have participated in studies involving the impact of COVID-19 on mobility and transport, urban-policy land use regulation impacts on informal housing settlements, and I am currently working on studying the impact of hurricanes over economic and electricity service recovery.
+        Spatial Data Scientist focusing on technology and quantitative analysis in policy research. <br /> <br /> Currently working for the Strategic Planning Division (SPD) at the Inter-American Development Bank (IDB), leveraging cloud computing technologies and data science methods to facilitate impact evaluations on social and environmental infrastructure projects.
     </div>
     <footer class="entry-footer">
         <div class="social-icons" >
@@ -158,6 +158,22 @@
 </div>
 
     </footer>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Bypassing AWS Athena &#34;Query Exhausted Resources&#34; using H3 Hexagons
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>If you’re working with Amazon Web Services (AWS) Athena SQL, chances are that you’ve encountered the following error:
+Query exhausted resources at this scale factor
+This generally indicates that you are hitting memory limits on the Athena cluster that runs your query (reference 1, reference 2, reference 3). AWS provides several performance optimization strategies, including data optimization, query optimization, and data partitioning.
+One approach to bypassing Athena’s resource limitations for large geospatial queries is to break down complex spatial intersections into a series of cascading steps, using a multi-resolution approach. Rather than testing each line against all polygons at the highest spatial resolution, this method begins with a lower, coarser resolution, identifying only broad intersections. Once these spatial matches are found, they serve as a foundation for progressively refined checks at higher resolutions. This effectively narrows down the dataset at each step, reducing the number of intersections that need to be evaluated as the resolution increases.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-10-17 16:25:52 -0400 EDT'>October 17, 2024</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to Bypassing AWS Athena &#34;Query Exhausted Resources&#34; using H3 Hexagons" href="//localhost:1313/posts/bypassing-athena-query-exhausted-resources/"></a>
 </article>
 
 <article class="post-entry"> 
