@@ -5,14 +5,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Bypassing AWS Athena &#34;Query Exhausted Resources&#34; using H3 Hexagons | Jerónimo Luza</title>
+<title>About | Jerónimo Luza</title>
 <meta name="keywords" content="">
-<meta name="description" content="If you&rsquo;re working with Amazon Web Services (AWS) Athena SQL, chances are that you&rsquo;ve encountered the following error:
-Query exhausted resources at this scale factor
-This generally indicates that you are hitting memory limits on the Athena cluster that runs your query (reference 1, reference 2, reference 3). AWS provides several performance optimization strategies, including data optimization, query optimization, and data partitioning.
-One approach to bypassing Athena&rsquo;s resource limitations for large geospatial queries is to break down complex spatial intersections into a series of cascading steps, using a multi-resolution approach. Rather than testing, say, each linestring against all polygons at the highest spatial resolution, one can begin with a lower, coarser resolution, identifying only broad intersections. Once these spatial matches are found, they can serve as a foundation for progressively refined checks at higher resolutions. This effectively narrows down the dataset at each step, reducing the number of intersections that need to be evaluated as the resolution increases.">
+<meta name="description" content="Hi there, I&rsquo;m Jerónimo! 👋
+My name is Jerónimo Luza, I&rsquo;m from Mercedes, province of Buenos Aires, Argentina.
+I am a Spatial Data Scientist focusing on technology and quantitative analysis in policy research.
+I&rsquo;m currently working for the Strategic Planning Division (SPD) at the Inter-American Development Bank (IDB), where I leverage cloud computing technologies and data science methods to facilitate impact evaluations on social and environmental infrastructure projects.
+As a research assistant, I have participated in studies involving the impact of COVID-19 on mobility and transport, urban-policy land use regulation impacts on informal housing settlements, and I am currently working on studying the impact of hurricanes over economic and electricity service recovery.">
 <meta name="author" content="">
-<link rel="canonical" href="//localhost:1313/posts/bypassing-athena-query-exhausted-resources/">
+<link rel="canonical" href="//localhost:1313/about/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="//localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="//localhost:1313/favicon-16x16.png">
@@ -21,7 +22,7 @@ One approach to bypassing Athena&rsquo;s resource limitations for large geospati
 <link rel="mask-icon" href="//localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="//localhost:1313/posts/bypassing-athena-query-exhausted-resources/">
+<link rel="alternate" hreflang="en" href="//localhost:1313/about/">
 <noscript>
     <style>
         #theme-toggle,
@@ -103,7 +104,7 @@ One approach to bypassing Athena&rsquo;s resource limitations for large geospati
         <ul id="menu">
             <li>
                 <a href="//localhost:1313/about/" title="About">
-                    <span>About</span>
+                    <span class="active">About</span>
                 </a>
             </li>
             <li>
@@ -131,24 +132,33 @@ One approach to bypassing Athena&rsquo;s resource limitations for large geospati
   <header class="post-header">
     
     <h1 class="post-title entry-hint-parent">
-      Bypassing AWS Athena &#34;Query Exhausted Resources&#34; using H3 Hexagons
+      About
     </h1>
-    <div class="post-meta"><span title='2024-10-17 16:25:52 -0400 EDT'>October 17, 2024</span>&nbsp;·&nbsp;3 min
+    <div class="post-meta">1 min
 
 </div>
   </header> 
-  <div class="post-content"><p>If you&rsquo;re working with Amazon Web Services (AWS) Athena SQL, chances are that you&rsquo;ve encountered the following error:</p>
-<p><code>Query exhausted resources at this scale factor</code></p>
-<p>This generally indicates that you are hitting memory limits on the Athena cluster that runs your query (<a href="https://repost.aws/questions/QU5M0ASE-_R_mvSMXDWrnuDA/athena-version-3-error-query-exhausted-resources-at-this-scale-factor">reference 1</a>, <a href="https://repost.aws/questions/QUdYYEXbb0QMuKX6TwDl17GA/athena-query-exhausted-resources-at-this-scale-factor">reference 2</a>, <a href="https://repost.aws/knowledge-center/athena-query-exhausted">reference 3</a>). AWS provides several <a href="https://docs.aws.amazon.com/athena/latest/ug/performance-tuning.html">performance optimization strategies</a>, including <a href="https://docs.aws.amazon.com/athena/latest/ug/performance-tuning-data-optimization-techniques.html">data optimization</a>, <a href="https://docs.aws.amazon.com/athena/latest/ug/performance-tuning-query-optimization-techniques.html">query optimization</a>, and <a href="https://docs.aws.amazon.com/athena/latest/ug/partition-projection.html#partition-projection-using">data partitioning</a>.</p>
-<p>One approach to bypassing Athena&rsquo;s resource limitations for large geospatial queries is to break down complex spatial intersections into a series of cascading steps, using a multi-resolution approach. Rather than testing, say, each linestring against all polygons at the highest spatial resolution, one can begin with a lower, coarser resolution, identifying only broad intersections. Once these spatial matches are found, they can serve as a foundation for progressively refined checks at higher resolutions. This effectively narrows down the dataset at each step, reducing the number of intersections that need to be evaluated as the resolution increases.</p>
-<p>H3 hexagons provide a natural framework for building this hierarchical structure of intersections by organizing spatial relationships from broader to finer resolutions, moving from parent hexagons to their child hexagons. Each H3 hexagon can be subdivided into smaller hexagons at the next resolution level, so intersections can first be evaluated at a coarser level, where each parent hexagon encompasses multiple child hexagons. This means initial intersections can identify general areas of interest at a lower resolution, while subsequent intersections at higher resolutions focus only on the children of those hexagons where intersections were previously found, reducing the number of comparisons needed at each step and enables scalable geometric operations by narrowing the scope of detailed calculations to smaller, relevant areas.</p>
-<p>This strategy avoids the otherwise immense cartesian product that results from a direct intersection of a large number of geometries with a dense, high-resolution grid. By gradually filtering data at each level, the process sidesteps Athena&rsquo;s memory constraints and makes it possible to perform detailed geospatial operations in stages.</p>
-<p>I&rsquo;m currently working on a project to create a structured, hierarchical database connecting each coarse hexagon in the grid to its finer-resolution counterparts by calculating an optimal disk size for coverage between resolutions. This disk size represents the number of hexagons in the finer grid needed to fully enclose each coarser-resolution hexagon, ensuring that each area in the coarse grid is spatially represented by an equivalent group of smaller hexagons in the next resolution level. The disk size is determined based on the difference between the current and target resolutions, meaning that for each transition to a higher resolution, the algorithm calculates how many neighboring hexagons (in a disk shape) are needed to encapsulate the space covered by the original coarser hexagon.</p>
-<p><img loading="lazy" src="./images/parent_centerchild.png" alt=""  />
-</p>
-<p><img loading="lazy" src="./images/centerchilds_griddisks.png" alt=""  />
-</p>
-<p>As the process moves from one resolution level to the next, it generates a series of databases or tables that capture these hierarchical relationships. Starting with an initial set of parent hexagons at a low resolution, each database created at subsequent levels tracks which finer-resolution hexagons correspond to each hexagon at the previous level. The code ensures this by calculating and storing the exact set of finer hexagons (or &ldquo;disk&rdquo;) associated with each coarse hexagon. This approach results in a cascading structure of tables, where each level contains a set of spatial mappings that allow intersection operations to proceed in stages, focusing only on increasingly smaller sets of hexagons. This prevents the need for an exhaustive, computationally prohibitive comparison across all hexagons at the highest resolution, enabling efficient and manageable geospatial operations across multiple levels of detail.</p>
+  <div class="post-content"><h1 id="hi-there-im-jerónimo-">Hi there, I&rsquo;m Jerónimo! 👋<a hidden class="anchor" aria-hidden="true" href="#hi-there-im-jerónimo-">#</a></h1>
+<p>My name is Jerónimo Luza, I&rsquo;m from Mercedes, province of Buenos Aires, Argentina.</p>
+<p>I am a Spatial Data Scientist focusing on technology and quantitative analysis in policy research.</p>
+<p>I&rsquo;m currently working for the Strategic Planning Division (SPD) at the Inter-American Development Bank (IDB), where I leverage cloud computing technologies and data science methods to facilitate impact evaluations on social and environmental infrastructure projects.</p>
+<p>As a research assistant, I have participated in studies involving the impact of COVID-19 on mobility and transport, urban-policy land use regulation impacts on informal housing settlements, and I am currently working on studying the impact of hurricanes over economic and electricity service recovery.</p>
+<p>My data toolkit is composed by:</p>
+<ul>
+<li>Python</li>
+<li>R</li>
+<li>SQL</li>
+<li>Unix/Linux</li>
+<li>Bash</li>
+<li>AWS</li>
+</ul>
+<p>While not working, I like contributing to open source software, playing sports, and doing fun stuff outside.</p>
+<p>Some of my contributions:</p>
+<ul>
+<li><a href="https://github.com/EL-BID/urbanpy">EL-BID/UrbanPy</a></li>
+<li><a href="https://github.com/EL-BID/SentinelDownloader">EL-BID/SentinelDownloader</a></li>
+<li><a href="https://github.com/perrygeo/python-rasterstats">perrygeo/rasterstats</a></li>
+</ul>
 
 
   </div>

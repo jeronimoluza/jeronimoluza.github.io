@@ -9,6 +9,17 @@
     <lastBuildDate>Thu, 17 Oct 2024 16:25:52 -0400</lastBuildDate>
     <atom:link href="//localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>About</title>
+      <link>//localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/about/</guid>
+      <description>&lt;h1 id=&#34;hi-there-im-jerónimo-&#34;&gt;Hi there, I&amp;rsquo;m Jerónimo! 👋&lt;/h1&gt;
+&lt;p&gt;My name is Jerónimo Luza, I&amp;rsquo;m from Mercedes, province of Buenos Aires, Argentina.&lt;/p&gt;
+&lt;p&gt;I am a Spatial Data Scientist focusing on technology and quantitative analysis in policy research.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;m currently working for the Strategic Planning Division (SPD) at the Inter-American Development Bank (IDB), where I leverage cloud computing technologies and data science methods to facilitate impact evaluations on social and environmental infrastructure projects.&lt;/p&gt;
+&lt;p&gt;As a research assistant, I have participated in studies involving the impact of COVID-19 on mobility and transport, urban-policy land use regulation impacts on informal housing settlements, and I am currently working on studying the impact of hurricanes over economic and electricity service recovery.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>Bypassing AWS Athena &#34;Query Exhausted Resources&#34; using H3 Hexagons</title>
       <link>//localhost:1313/posts/bypassing-athena-query-exhausted-resources/</link>
       <pubDate>Thu, 17 Oct 2024 16:25:52 -0400</pubDate>
