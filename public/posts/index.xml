@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Jerónimo Luza</description>
     <generator>Hugo -- 0.136.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 17 Oct 2024 16:25:52 -0400</lastBuildDate>
+    <lastBuildDate>Wed, 30 Oct 2024 16:25:52 -0400</lastBuildDate>
     <atom:link href="//localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mapping Perito Moreno Glacier Loss with Sentinel-2</title>
+      <link>//localhost:1313/posts/mapping-perito-moreno-glacier-loss-with-sentinel-2/</link>
+      <pubDate>Wed, 30 Oct 2024 16:25:52 -0400</pubDate>
+      <guid>//localhost:1313/posts/mapping-perito-moreno-glacier-loss-with-sentinel-2/</guid>
+      <description>&lt;iframe src=&#34;https://storymaps.arcgis.com/stories/f223a7c46cc54c049f373b41f437722d?cover=false&#34; width=&#34;100%&#34; height=&#34;9000px&#34; frameborder=&#34;0&#34; allowfullscreen allow=&#34;geolocation&#34; scrolling=&#34;no&#34;&gt;&lt;/iframe&gt;</description>
+    </item>
     <item>
       <title>Bypassing AWS Athena &#34;Query Exhausted Resources&#34; using H3 Hexagons</title>
       <link>//localhost:1313/posts/bypassing-athena-query-exhausted-resources/</link>
