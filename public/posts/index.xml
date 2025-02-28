@@ -4,16 +4,26 @@
     <title>Posts on Jerónimo Luza</title>
     <link>//localhost:1313/posts/</link>
     <description>Recent content in Posts on Jerónimo Luza</description>
-    <generator>Hugo -- 0.136.0</generator>
+    <generator>Hugo -- 0.145.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Oct 2024 16:25:52 -0400</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jan 2025 16:25:52 -0400</lastBuildDate>
     <atom:link href="//localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Extract OSM Road Network Data for GADM Administrative Regions With R</title>
+      <link>//localhost:1313/posts/extract-osm-road-network-data-with-r/</link>
+      <pubDate>Fri, 17 Jan 2025 16:25:52 -0400</pubDate>
+      <guid>//localhost:1313/posts/extract-osm-road-network-data-with-r/</guid>
+      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;./images/ARG_highways.png&#34; alt=&#34;Road Network in Buenos Aires City&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;One of the most common data requests in geospatial data science is obtaining the road network within a given administrative boundary. This includes identifying road locations, classifying road types, and calculating the total road length within a region—an essential analysis for various applications.&lt;/p&gt;
+&lt;p&gt;OpenStreetMap (OSM) is widely recognized as the go-to source for road network data, thanks to its crowdsourced contributions that provide global coverage. To step outside my usual Python development, I decided to create an R function to extract OSM road network data for a given administrative boundary. This function generates a CSV containing the roads&amp;rsquo; linestrings within the boundary and, if requested, also exports a PNG visualizing the results.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Mapping Perito Moreno Glacier Loss with Sentinel-2</title>
       <link>//localhost:1313/posts/mapping-perito-moreno-glacier-loss-with-sentinel-2/</link>
       <pubDate>Wed, 30 Oct 2024 16:25:52 -0400</pubDate>
       <guid>//localhost:1313/posts/mapping-perito-moreno-glacier-loss-with-sentinel-2/</guid>
-      <description>&lt;p&gt;The next article is embedded in an iframe. Some features may not work correctly.&lt;/p&gt;
+      <description>&lt;p&gt;The next article is an ArcGIS StoryMap embedded in an iframe. Some features may not work correctly.&lt;/p&gt;
 &lt;iframe src=&#34;https://storymaps.arcgis.com/stories/f223a7c46cc54c049f373b41f437722d?cover=false&#34; width=&#34;100%&#34; height=&#34;9000px&#34; frameborder=&#34;0&#34; allowfullscreen allow=&#34;geolocation&#34; scrolling=&#34;no&#34;&gt;&lt;/iframe&gt;</description>
     </item>
     <item>
@@ -21,10 +31,10 @@
       <link>//localhost:1313/posts/bypassing-athena-query-exhausted-resources/</link>
       <pubDate>Thu, 17 Oct 2024 16:25:52 -0400</pubDate>
       <guid>//localhost:1313/posts/bypassing-athena-query-exhausted-resources/</guid>
-      <description>&lt;p&gt;If you&amp;rsquo;re working with Amazon Web Services (AWS) Athena SQL, chances are that you&amp;rsquo;ve encountered the following error:&lt;/p&gt;
+      <description>&lt;p&gt;If you work with Amazon Web Services (AWS) Athena SQL, chances are that you&amp;rsquo;ve encountered the following error:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Query exhausted resources at this scale factor&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;This generally indicates that you are hitting memory limits on the Athena cluster that runs your query (&lt;a href=&#34;https://repost.aws/questions/QU5M0ASE-_R_mvSMXDWrnuDA/athena-version-3-error-query-exhausted-resources-at-this-scale-factor&#34;&gt;reference 1&lt;/a&gt;, &lt;a href=&#34;https://repost.aws/questions/QUdYYEXbb0QMuKX6TwDl17GA/athena-query-exhausted-resources-at-this-scale-factor&#34;&gt;reference 2&lt;/a&gt;, &lt;a href=&#34;https://repost.aws/knowledge-center/athena-query-exhausted&#34;&gt;reference 3&lt;/a&gt;). AWS provides several &lt;a href=&#34;https://docs.aws.amazon.com/athena/latest/ug/performance-tuning.html&#34;&gt;performance optimization strategies&lt;/a&gt;, including &lt;a href=&#34;https://docs.aws.amazon.com/athena/latest/ug/performance-tuning-data-optimization-techniques.html&#34;&gt;data optimization&lt;/a&gt;, &lt;a href=&#34;https://docs.aws.amazon.com/athena/latest/ug/performance-tuning-query-optimization-techniques.html&#34;&gt;query optimization&lt;/a&gt;, and &lt;a href=&#34;https://docs.aws.amazon.com/athena/latest/ug/partition-projection.html#partition-projection-using&#34;&gt;data partitioning&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;One approach to bypassing Athena&amp;rsquo;s resource limitations for large geospatial queries is to break down complex spatial intersections into a series of cascading steps, using a multi-resolution approach. Rather than testing, say, each linestring against all polygons at the highest spatial resolution, one can begin with a lower, coarser resolution, identifying only broad intersections. Once these spatial matches are found, they can serve as a foundation for progressively refined checks at higher resolutions. This effectively narrows down the dataset at each step, reducing the number of intersections that need to be evaluated as the resolution increases.&lt;/p&gt;</description>
+&lt;p&gt;One way to bypass Athena’s resource limitations for large geospatial queries is to segment intersection operations into a structured sequence of steps. For example, instead of attempting to intersect a large number of small polygons with line geometries all at once—which can cause queries to fail—one can first intersect the lines with larger enclosing geometries, such as administrative boundaries or grid cells. This initial step acts as a filter, identifying only the linestrings that intersect with these larger geometries. The next step is to take these filtered lines and intersect them with the smaller polygons contained within the intersected larger geometries. By introducing more intermediate steps, we further reduce the number of geometries processed at each stage, making it easier for Athena to handle the query efficiently and preventing resource exhaustion.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Extract PM2.5 Pixels and Convert Them to H3 Hexagons</title>

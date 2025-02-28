@@ -4,20 +4,52 @@
     <title>Jerónimo Luza</title>
     <link>//localhost:1313/</link>
     <description>Recent content on Jerónimo Luza</description>
-    <generator>Hugo -- 0.136.0</generator>
+    <generator>Hugo -- 0.145.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Oct 2024 16:25:52 -0400</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jan 2025 16:25:52 -0400</lastBuildDate>
     <atom:link href="//localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>About</title>
       <link>//localhost:1313/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/about/</guid>
-      <description>&lt;h1 id=&#34;hi-there-im-jerónimo-&#34;&gt;Hi there, I&amp;rsquo;m Jerónimo! 👋&lt;/h1&gt;
-&lt;p&gt;My name is Jerónimo Luza, I&amp;rsquo;m from Mercedes, province of Buenos Aires, Argentina.&lt;/p&gt;
-&lt;p&gt;I am a Spatial Data Scientist focusing on technology and quantitative analysis in policy research.&lt;/p&gt;
-&lt;p&gt;I&amp;rsquo;m currently working for the Strategic Planning Division (SPD) at the Inter-American Development Bank (IDB), where I leverage cloud computing technologies and data science methods to facilitate impact evaluations on social and environmental infrastructure projects.&lt;/p&gt;
-&lt;p&gt;As a research assistant, I have participated in studies involving the impact of COVID-19 on mobility and transport, urban-policy land use regulation impacts on informal housing settlements, and I am currently working on studying the impact of hurricanes over economic and electricity service recovery.&lt;/p&gt;</description>
+      <description>&lt;h3 id=&#34;jerónimo-luza&#34;&gt;Jerónimo Luza&lt;/h3&gt;
+&lt;h4 id=&#34;geospatial-data-scientist&#34;&gt;Geospatial Data Scientist&lt;/h4&gt;
+&lt;h3 id=&#34;education&#34;&gt;Education&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;2023.05-2024.12: Master of Science in Spatial Data Science, Penn State University.&lt;/li&gt;
+&lt;li&gt;2013-2018: Bachelor&amp;rsquo;s Degree in Economics, Universidad Torcuato Di Tella&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;research-interests&#34;&gt;Research Interests&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Remote Sensing&lt;/li&gt;
+&lt;li&gt;Environmental Impact&lt;/li&gt;
+&lt;li&gt;Disaster Response&lt;/li&gt;
+&lt;li&gt;Mobility and Transport&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;skills&#34;&gt;Skills&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Natural Language: Spanish (Native); English (Fluent)&lt;/li&gt;
+&lt;li&gt;Programming Language: &lt;strong&gt;Python&lt;/strong&gt;; R; SQL; Stata&lt;/li&gt;
+&lt;li&gt;Typesetting Language: &lt;strong&gt;Markdown&lt;/strong&gt;; LaTeX&lt;/li&gt;
+&lt;li&gt;Other: &lt;strong&gt;Unix/Linux&lt;/strong&gt;; Bash; AWS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;contributions&#34;&gt;Contributions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/EL-BID/urbanpy&#34;&gt;EL-BID/UrbanPy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/EL-BID/SentinelDownloader&#34;&gt;EL-BID/SentinelDownloader&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/perrygeo/python-rasterstats&#34;&gt;perrygeo/rasterstats&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>Extract OSM Road Network Data for GADM Administrative Regions With R</title>
+      <link>//localhost:1313/posts/extract-osm-road-network-data-with-r/</link>
+      <pubDate>Fri, 17 Jan 2025 16:25:52 -0400</pubDate>
+      <guid>//localhost:1313/posts/extract-osm-road-network-data-with-r/</guid>
+      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;./images/ARG_highways.png&#34; alt=&#34;Road Network in Buenos Aires City&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;One of the most common data requests in geospatial data science is obtaining the road network within a given administrative boundary. This includes identifying road locations, classifying road types, and calculating the total road length within a region—an essential analysis for various applications.&lt;/p&gt;
+&lt;p&gt;OpenStreetMap (OSM) is widely recognized as the go-to source for road network data, thanks to its crowdsourced contributions that provide global coverage. To step outside my usual Python development, I decided to create an R function to extract OSM road network data for a given administrative boundary. This function generates a CSV containing the roads&amp;rsquo; linestrings within the boundary and, if requested, also exports a PNG visualizing the results.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Mapping Perito Moreno Glacier Loss with Sentinel-2</title>
@@ -32,10 +64,10 @@
       <link>//localhost:1313/posts/bypassing-athena-query-exhausted-resources/</link>
       <pubDate>Thu, 17 Oct 2024 16:25:52 -0400</pubDate>
       <guid>//localhost:1313/posts/bypassing-athena-query-exhausted-resources/</guid>
-      <description>&lt;p&gt;If you&amp;rsquo;re working with Amazon Web Services (AWS) Athena SQL, chances are that you&amp;rsquo;ve encountered the following error:&lt;/p&gt;
+      <description>&lt;p&gt;If you work with Amazon Web Services (AWS) Athena SQL, chances are that you&amp;rsquo;ve encountered the following error:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Query exhausted resources at this scale factor&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;This generally indicates that you are hitting memory limits on the Athena cluster that runs your query (&lt;a href=&#34;https://repost.aws/questions/QU5M0ASE-_R_mvSMXDWrnuDA/athena-version-3-error-query-exhausted-resources-at-this-scale-factor&#34;&gt;reference 1&lt;/a&gt;, &lt;a href=&#34;https://repost.aws/questions/QUdYYEXbb0QMuKX6TwDl17GA/athena-query-exhausted-resources-at-this-scale-factor&#34;&gt;reference 2&lt;/a&gt;, &lt;a href=&#34;https://repost.aws/knowledge-center/athena-query-exhausted&#34;&gt;reference 3&lt;/a&gt;). AWS provides several &lt;a href=&#34;https://docs.aws.amazon.com/athena/latest/ug/performance-tuning.html&#34;&gt;performance optimization strategies&lt;/a&gt;, including &lt;a href=&#34;https://docs.aws.amazon.com/athena/latest/ug/performance-tuning-data-optimization-techniques.html&#34;&gt;data optimization&lt;/a&gt;, &lt;a href=&#34;https://docs.aws.amazon.com/athena/latest/ug/performance-tuning-query-optimization-techniques.html&#34;&gt;query optimization&lt;/a&gt;, and &lt;a href=&#34;https://docs.aws.amazon.com/athena/latest/ug/partition-projection.html#partition-projection-using&#34;&gt;data partitioning&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;One approach to bypassing Athena&amp;rsquo;s resource limitations for large geospatial queries is to break down complex spatial intersections into a series of cascading steps, using a multi-resolution approach. Rather than testing, say, each linestring against all polygons at the highest spatial resolution, one can begin with a lower, coarser resolution, identifying only broad intersections. Once these spatial matches are found, they can serve as a foundation for progressively refined checks at higher resolutions. This effectively narrows down the dataset at each step, reducing the number of intersections that need to be evaluated as the resolution increases.&lt;/p&gt;</description>
+&lt;p&gt;One way to bypass Athena’s resource limitations for large geospatial queries is to segment intersection operations into a structured sequence of steps. For example, instead of attempting to intersect a large number of small polygons with line geometries all at once—which can cause queries to fail—one can first intersect the lines with larger enclosing geometries, such as administrative boundaries or grid cells. This initial step acts as a filter, identifying only the linestrings that intersect with these larger geometries. The next step is to take these filtered lines and intersect them with the smaller polygons contained within the intersected larger geometries. By introducing more intermediate steps, we further reduce the number of geometries processed at each stage, making it easier for Athena to handle the query efficiently and preventing resource exhaustion.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Extract PM2.5 Pixels and Convert Them to H3 Hexagons</title>

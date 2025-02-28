@@ -132,14 +132,28 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Extract OSM Road Network Data for GADM Administrative Regions With R
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> One of the most common data requests in geospatial data science is obtaining the road network within a given administrative boundary. This includes identifying road locations, classifying road types, and calculating the total road length within a region—an essential analysis for various applications.
+OpenStreetMap (OSM) is widely recognized as the go-to source for road network data, thanks to its crowdsourced contributions that provide global coverage. To step outside my usual Python development, I decided to create an R function to extract OSM road network data for a given administrative boundary. This function generates a CSV containing the roads’ linestrings within the boundary and, if requested, also exports a PNG visualizing the results.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-17 16:25:52 -0400 -0400'>January 17, 2025</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to Extract OSM Road Network Data for GADM Administrative Regions With R" href="//localhost:1313/posts/extract-osm-road-network-data-with-r/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Mapping Perito Moreno Glacier Loss with Sentinel-2
     </h2>
   </header>
   <div class="entry-content">
-    <p>The next article is embedded in an iframe. Some features may not work correctly.
+    <p>The next article is an ArcGIS StoryMap embedded in an iframe. Some features may not work correctly.
 </p>
   </div>
-  <footer class="entry-footer"><span title='2024-10-30 16:25:52 -0400 EDT'>October 30, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <footer class="entry-footer"><span title='2024-10-30 16:25:52 -0400 -0400'>October 30, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to Mapping Perito Moreno Glacier Loss with Sentinel-2" href="//localhost:1313/posts/mapping-perito-moreno-glacier-loss-with-sentinel-2/"></a>
 </article>
 
@@ -149,13 +163,13 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p>If you’re working with Amazon Web Services (AWS) Athena SQL, chances are that you’ve encountered the following error:
+    <p>If you work with Amazon Web Services (AWS) Athena SQL, chances are that you’ve encountered the following error:
 Query exhausted resources at this scale factor
 This generally indicates that you are hitting memory limits on the Athena cluster that runs your query (reference 1, reference 2, reference 3). AWS provides several performance optimization strategies, including data optimization, query optimization, and data partitioning.
-One approach to bypassing Athena’s resource limitations for large geospatial queries is to break down complex spatial intersections into a series of cascading steps, using a multi-resolution approach. Rather than testing, say, each linestring against all polygons at the highest spatial resolution, one can begin with a lower, coarser resolution, identifying only broad intersections. Once these spatial matches are found, they can serve as a foundation for progressively refined checks at higher resolutions. This effectively narrows down the dataset at each step, reducing the number of intersections that need to be evaluated as the resolution increases.
+One way to bypass Athena’s resource limitations for large geospatial queries is to segment intersection operations into a structured sequence of steps. For example, instead of attempting to intersect a large number of small polygons with line geometries all at once—which can cause queries to fail—one can first intersect the lines with larger enclosing geometries, such as administrative boundaries or grid cells. This initial step acts as a filter, identifying only the linestrings that intersect with these larger geometries. The next step is to take these filtered lines and intersect them with the smaller polygons contained within the intersected larger geometries. By introducing more intermediate steps, we further reduce the number of geometries processed at each stage, making it easier for Athena to handle the query efficiently and preventing resource exhaustion.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-10-17 16:25:52 -0400 EDT'>October 17, 2024</span>&nbsp;·&nbsp;3 min</footer>
+  <footer class="entry-footer"><span title='2024-10-17 16:25:52 -0400 -0400'>October 17, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to Bypassing AWS Athena &#34;Query Exhausted Resources&#34; using H3 Hexagons" href="//localhost:1313/posts/bypassing-athena-query-exhausted-resources/"></a>
 </article>
 
@@ -169,13 +183,13 @@ One approach to bypassing Athena’s resource limitations for large geospatial q
 The initiative comprises a collection of estimated global and regional annual and monthly satellite-derived ground-level fine particulate matter (PM2.5) gridded datasets (Shen et al., 2024), spanning the years 1998 to 2022. This collection combines Aerosol Optical Depth (AOD) retrievals from NASA MODIS, MISR, and SeaWIFS, and is available at resolutions 0.01º x 0.01º and 0.1º x 0.1º. For more details and downloading information, visit Satellite-derived PM2.5.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-09-18 20:45:52 -0400 EDT'>September 18, 2024</span>&nbsp;·&nbsp;4 min</footer>
+  <footer class="entry-footer"><span title='2024-09-18 20:45:52 -0400 -0400'>September 18, 2024</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to Extract PM2.5 Pixels and Convert Them to H3 Hexagons" href="//localhost:1313/posts/extract-pm25-pixels-and-convert-them-to-h3-hexagons/"></a>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="//localhost:1313/">Jerónimo Luza</a></span> · 
+        <span>&copy; 2025 <a href="//localhost:1313/">Jerónimo Luza</a></span> · 
 
     <span>
         Powered by
