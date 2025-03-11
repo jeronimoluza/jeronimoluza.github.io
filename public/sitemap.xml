@@ -4,13 +4,16 @@
   <url>
     <loc>//localhost:1313/about/</loc>
   </url><url>
-    <loc>//localhost:1313/posts/extract-osm-road-network-data-with-r/</loc>
-    <lastmod>2025-01-17T16:25:52-04:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/</loc>
-    <lastmod>2025-01-17T16:25:52-04:00</lastmod>
+    <lastmod>2025-02-15T16:25:52-04:00</lastmod>
   </url><url>
     <loc>//localhost:1313/posts/</loc>
+    <lastmod>2025-02-15T16:25:52-04:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/posts/processing-ndvi-data-in-python-transforming-multidimensional-arrays-to-polygons/</loc>
+    <lastmod>2025-02-15T16:25:52-04:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/posts/extract-osm-road-network-data-with-r/</loc>
     <lastmod>2025-01-17T16:25:52-04:00</lastmod>
   </url><url>
     <loc>//localhost:1313/posts/mapping-perito-moreno-glacier-loss-with-sentinel-2/</loc>

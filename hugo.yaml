@@ -10,6 +10,7 @@ markup:
 
 params:
   defaultTheme: auto
+  math: true
   ShowReadingTime: true
   ShowCodeCopyButtons: true
 

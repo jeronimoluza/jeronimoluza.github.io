@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Processing MODIS NDVI Data in Python: Transforming Multidimensional Arrays to Polygons | Jerónimo Luza</title>
+<meta name="keywords" content="">
+<meta name="description" content="A few weeks ago, I had the opportunity to work with NASA&rsquo;s MODIS NDVI data. Utilizing an example script from the HDF - EOS Tools and Information Center as reference, I developed a program that takes an area of interest, a start date, and an end date, then downloads and process the corresponding NDVI data from NASA archives. The program leverages parallel processing to efficiently convert NDVI raster data into vectorized polygons. In this blog post, I&rsquo;ll share my approach and insights from the process.">
+<meta name="author" content="">
+<link rel="canonical" href="//localhost:1313/posts/processing-ndvi-data-in-python-transforming-multidimensional-arrays-to-polygons/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="//localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="//localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="//localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="//localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="//localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="//localhost:1313/posts/processing-ndvi-data-in-python-transforming-multidimensional-arrays-to-polygons/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="//localhost:1313/" accesskey="h" title="Jerónimo Luza (Alt + H)">Jerónimo Luza</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="//localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="//localhost:1313/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/jeronimoluza" title="GitHub">
+                    <span>GitHub</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Processing MODIS NDVI Data in Python: Transforming Multidimensional Arrays to Polygons
+    </h1>
+    <div class="post-meta"><span title='2025-02-15 16:25:52 -0400 -0400'>February 15, 2025</span>&nbsp;·&nbsp;12 min
+
+</div>
+  </header> 
+  <div class="post-content"><p>A few weeks ago, I had the opportunity to work with NASA&rsquo;s MODIS NDVI data. Utilizing an <a href="http://hdfeos.org/zoo/LPDAAC/MOD09GA.A2007268.h10v08.061.2021074090204.hdf.py">example script</a> from the <a href="http://hdfeos.org/zoo/">HDF - EOS Tools and Information Center</a> as reference, I developed a program that takes an area of interest, a start date, and an end date, then downloads and process the corresponding NDVI data from NASA archives. The program leverages parallel processing to efficiently convert NDVI raster data into vectorized polygons. In this blog post, I&rsquo;ll share my approach and insights from the process.</p>
+<p><img loading="lazy" src="./images/MOD13Q1.A2009257.h13v09.061.2021142080827.png" alt="250m 16 days NDVI readings over northern Brazil"  />
+</p>
+<p>The <strong>Normalized Difference Vegetation Index (NDVI)</strong> is a widely used remote sensing index that measures vegetation health and density. It is based on the difference in reflectance between the near-infrared (NIR) and red (RED) wavelengths, as healthy vegetation strongly reflects NIR light while absorbing RED light. NDVI is calculated using the following equation:</p>
+<p>$$
+NDVI = \frac{NIR - RED}{NIR + RED}
+$$</p>
+<p>where:</p>
+<ul>
+<li>$NIR$ = reflectance in the near-infrared band</li>
+<li>$RED$ = reflectance in the red band</li>
+</ul>
+<p>Values range from -1 to 1, where higher values indicate healthier vegetation.</p>
+<p>The key dataset providing NDVI measurements is the <strong>MODIS 16-day NDVI 250m product</strong> (<a href="https://lpdaac.usgs.gov/products/myd13q1v061/">MOD13Q1</a> for Terra and <a href="https://lpdaac.usgs.gov/products/mod13q1v061/">MYD13Q1</a> for Aqua). This product offers global vegetation index data at a <strong>250-meter spatial resolution</strong>, composited over a <strong>16-day period</strong> to minimize cloud contamination and atmospheric noise. Derived from the <strong>Moderate Resolution Imaging Spectroradiometer (MODIS)</strong> sensor aboard NASA&rsquo;s Terra and Aqua satellites, it ensures high-quality data by selecting the best available pixel based on cloud cover, aerosol levels, and sensor viewing geometry. MOD13Q1 and MYD13Q1 are widely used in ecological monitoring, agriculture, and climate studies, supporting applications such as drought assessment, land cover classification, and vegetation phenology analysis.</p>
+<h2 id="the-downloading">The Downloading<a hidden class="anchor" aria-hidden="true" href="#the-downloading">#</a></h2>
+<p>To download the NDVI data from the NASA archives, the program uses the <a href="https://github.com/nsidc/earthaccess"><code>earthaccess</code></a> library. <code>earthaccess</code> is a Python library to search for, and download or stream NASA Earth science data with just a few lines of code. The only requirement to use this library is to open a free account with NASA <a href="https://urs.earthdata.nasa.gov/">Earthdata Login</a>.</p>
+<p>By default, <code>earthaccess</code> will look for your Earthdata Login credentials in a <code>.netrc</code> file, or in environment variables <code>EARTHDATA_USERNAME</code> and <code>EARTHDATA_PASSWORD</code>. If you don&rsquo;t have either of these set up, you can login manually. See the <a href="https://earthaccess.readthedocs.io/en/latest/howto/authenticate/">Authenticating guide</a> to learn how to create a <code>.netrc</code> file or environment variables.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> earthaccess
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>earthaccess<span style="color:#f92672">.</span>login()
+</span></span></code></pre></div><p>Read more about <code>earthaccess</code> on the <a href="https://earthaccess.readthedocs.io/en/latest/">library&rsquo;s documentation</a>.</p>
+<p>The program includes a function that facilitates the interaction with the <code>earthaccess</code> module. The <code>earthaccess.search()</code> function requires a product’s short name, version, a bounding box in <code>(lower_left_lon, lower_left_lat, upper_right_lon, upper_right_lat)</code> format, a <code>(start_date, end_date)</code> tuple, and an optional <code>count</code> parameter to limit results.</p>
+<p>For a more flexible input handling, I created a <code>get_bounding_box()</code> function that processes the area of interest and generates a bounding box in the required format. This function supports various input types, including <code>shapely.geometry.Polygon</code>, <code>shapely.geometry.MultiPolygon</code>, <code>geopandas.GeoDataFrame</code>, and Well-Known Text (WKT).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> geopandas <span style="color:#66d9ef">as</span> gpd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> shapely <span style="color:#f92672">import</span> wkt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> shapely.geometry <span style="color:#f92672">import</span> MultiPolygon, Polygon
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_bounding_box</span>(region):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> isinstance(region, (Polygon, MultiPolygon)):
+</span></span><span style="display:flex;"><span>        (
+</span></span><span style="display:flex;"><span>            minx,
+</span></span><span style="display:flex;"><span>            miny,
+</span></span><span style="display:flex;"><span>            maxx,
+</span></span><span style="display:flex;"><span>            maxy,
+</span></span><span style="display:flex;"><span>        ) <span style="color:#f92672">=</span> region<span style="color:#f92672">.</span>bounds  <span style="color:#75715e"># Directly get bounds for shapely geometries</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> isinstance(region, gpd<span style="color:#f92672">.</span>GeoDataFrame):
+</span></span><span style="display:flex;"><span>        (
+</span></span><span style="display:flex;"><span>            minx,
+</span></span><span style="display:flex;"><span>            miny,
+</span></span><span style="display:flex;"><span>            maxx,
+</span></span><span style="display:flex;"><span>            maxy,
+</span></span><span style="display:flex;"><span>        ) <span style="color:#f92672">=</span> region<span style="color:#f92672">.</span>total_bounds  <span style="color:#75715e"># Get total bounds for GeoDataFrame</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> isinstance(region, str):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>            geom <span style="color:#f92672">=</span> wkt<span style="color:#f92672">.</span>loads(region)  <span style="color:#75715e"># Load WKT string</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> isinstance(geom, (Polygon, MultiPolygon)):
+</span></span><span style="display:flex;"><span>                minx, miny, maxx, maxy <span style="color:#f92672">=</span> geom<span style="color:#f92672">.</span>bounds
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;WKT does not represent a valid Polygon or MultiPolygon.&#34;</span>
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Invalid WKT string: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">TypeError</span>(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Unsupported region type. Must be a Polygon, MultiPolygon, GeoDataFrame, or WKT string.&#34;</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>        minx,
+</span></span><span style="display:flex;"><span>        miny,
+</span></span><span style="display:flex;"><span>        maxx,
+</span></span><span style="display:flex;"><span>        maxy,
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><p>The following function automates the download of NASA granules for a specified product, given a time range and region of interest. It leverages the <code>earthaccess</code> library to search and download granules while organizing the output into a structured folder.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> earthaccess
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">download_earthaccess</span>(
+</span></span><span style="display:flex;"><span>    download_dir: str,
+</span></span><span style="display:flex;"><span>    short_name: str,
+</span></span><span style="display:flex;"><span>    version: str,
+</span></span><span style="display:flex;"><span>    start_date: str,
+</span></span><span style="display:flex;"><span>    end_date: str,
+</span></span><span style="display:flex;"><span>    region,
+</span></span><span style="display:flex;"><span>    count: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>) <span style="color:#f92672">-&gt;</span> list:
+</span></span><span style="display:flex;"><span>    bounding_box <span style="color:#f92672">=</span> get_bounding_box(region<span style="color:#f92672">=</span>region)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    download_dir <span style="color:#f92672">=</span> download_dir <span style="color:#f92672">+</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;/</span><span style="color:#e6db74">{</span>short_name<span style="color:#e6db74">}</span><span style="color:#e6db74">_</span><span style="color:#e6db74">{</span>version<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Define download directory</span>
+</span></span><span style="display:flex;"><span>    os<span style="color:#f92672">.</span>makedirs(download_dir, exist_ok<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Search for NASA granules</span>
+</span></span><span style="display:flex;"><span>    granules <span style="color:#f92672">=</span> earthaccess<span style="color:#f92672">.</span>search_data(
+</span></span><span style="display:flex;"><span>        short_name<span style="color:#f92672">=</span>short_name,
+</span></span><span style="display:flex;"><span>        version<span style="color:#f92672">=</span>version,
+</span></span><span style="display:flex;"><span>        temporal<span style="color:#f92672">=</span>(start_date, end_date),
+</span></span><span style="display:flex;"><span>        bounding_box<span style="color:#f92672">=</span>bounding_box,
+</span></span><span style="display:flex;"><span>        count<span style="color:#f92672">=</span>count,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Found </span><span style="color:#e6db74">{</span>len(granules)<span style="color:#e6db74">}</span><span style="color:#e6db74"> granules.&#34;</span>)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Downloading </span><span style="color:#e6db74">{</span>count<span style="color:#e6db74">}</span><span style="color:#e6db74"> granules.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Download granules</span>
+</span></span><span style="display:flex;"><span>    files <span style="color:#f92672">=</span> earthaccess<span style="color:#f92672">.</span>download(granules, local_path<span style="color:#f92672">=</span>download_dir)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Downloaded </span><span style="color:#e6db74">{</span>len(files)<span style="color:#e6db74">}</span><span style="color:#e6db74"> files to </span><span style="color:#e6db74">{</span>download_dir<span style="color:#e6db74">}</span><span style="color:#e6db74">.&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> files
+</span></span></code></pre></div><h2 id="the-processing">The Processing<a hidden class="anchor" aria-hidden="true" href="#the-processing">#</a></h2>
+<p>To illustrate the processing of the downloaded files, I&rsquo;ll first present the high-level function that handles a single file before breaking down its components. The workflow begins by extracting metadata from the <code>hdf</code> file upon opening. Next, it processes the <code>numpy</code> data array by replacing fill values and out-of-range values with <code>np.nan</code>, then applies the scale factor to transform the data. Finally, it generates pixel polygon data using the scene&rsquo;s corner coordinates and converts the results into a <code>geopandas.GeoDataFrame</code> with the standard CRS (<code>EPSG:4326</code>).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> shapely.geometry <span style="color:#f92672">import</span> Polygon
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> geopandas <span style="color:#66d9ef">as</span> gpd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pyhdf.SD <span style="color:#f92672">import</span> SD, SDC
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_file</span>(
+</span></span><span style="display:flex;"><span>    filepath: str, data_field: str, geometry: Polygon <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>) <span style="color:#f92672">-&gt;</span> gpd<span style="color:#f92672">.</span>GeoDataFrame:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Processing file: </span><span style="color:#e6db74">{</span>filepath<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    hdf_file <span style="color:#f92672">=</span> SD(filepath, SDC<span style="color:#f92672">.</span>READ)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Extracting from HDF...&#34;</span>)
+</span></span><span style="display:flex;"><span>    (
+</span></span><span style="display:flex;"><span>        _FillValue,
+</span></span><span style="display:flex;"><span>        scale_factor,
+</span></span><span style="display:flex;"><span>        valid_range,
+</span></span><span style="display:flex;"><span>        add_offset,
+</span></span><span style="display:flex;"><span>        upper_left_x,
+</span></span><span style="display:flex;"><span>        upper_left_y,
+</span></span><span style="display:flex;"><span>        lower_right_x,
+</span></span><span style="display:flex;"><span>        lower_right_y,
+</span></span><span style="display:flex;"><span>    ) <span style="color:#f92672">=</span> extract_metadata(hdf_file, data_field)
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> hdf_file<span style="color:#f92672">.</span>select(data_field)
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> treat_data_array(data, _FillValue, scale_factor, valid_range, add_offset)
+</span></span><span style="display:flex;"><span>    hdf_file<span style="color:#f92672">.</span>end()
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Done!&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    polygons, values <span style="color:#f92672">=</span> generate_polygon_data(
+</span></span><span style="display:flex;"><span>        data, upper_left_x, upper_left_y, lower_right_x, lower_right_y, n_jobs<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> create_geodataframe_and_reproject(polygons, values, data_field, geometry)
+</span></span></code></pre></div><h3 id="extracting-raw-files-metadata">Extracting Raw Files Metadata<a hidden class="anchor" aria-hidden="true" href="#extracting-raw-files-metadata">#</a></h3>
+<p>The <code>extract_metadata()</code> function is designed to retrieve metadata from an HDF file for a specific data field. It begins by accessing the global attributes of the HDF object, specifically the <code>StructMetadata.0</code> attribute, which contains information about the dataset’s spatial structure. This metadata provides details about the dataset&rsquo;s bounding box and coordinate system.</p>
+<p>Next, the function extracts attributes specific to the requested data field, retrieving values such as the fill value, scale factor, valid range, and offset. These attributes help in ensuring that missing values are accounted for, and that numerical values can be properly scaled and adjusted.</p>
+<p>To determine the spatial extents of the dataset, the function then parses the global metadata using regular expressions. It searches for coordinate values defining the upper-left and lower-right corners of the grid, extracting these as floating-point numbers.</p>
+<p>Finally, the function returns a tuple containing all the extracted information, including the fill value, scale factor, valid range, offset, and the four coordinate values that define the dataset’s spatial boundaries.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pyhdf.SD <span style="color:#f92672">import</span> SD
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">extract_metadata</span>(hdf_object: SD, data_field: str) <span style="color:#f92672">-&gt;</span> tuple:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    struct_metadata <span style="color:#f92672">=</span> hdf_object<span style="color:#f92672">.</span>attributes(full<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)[<span style="color:#e6db74">&#34;StructMetadata.0&#34;</span>][<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    data_field_metadata <span style="color:#f92672">=</span> hdf_object<span style="color:#f92672">.</span>select(data_field)<span style="color:#f92672">.</span>attributes(full<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    lna <span style="color:#f92672">=</span> data_field_metadata[<span style="color:#e6db74">&#34;long_name&#34;</span>][<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    valid_range <span style="color:#f92672">=</span> data_field_metadata[<span style="color:#e6db74">&#34;valid_range&#34;</span>][<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    _FillValue <span style="color:#f92672">=</span> data_field_metadata[<span style="color:#e6db74">&#34;_FillValue&#34;</span>][<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    scale_factor <span style="color:#f92672">=</span> data_field_metadata[<span style="color:#e6db74">&#34;scale_factor&#34;</span>][<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    units <span style="color:#f92672">=</span> data_field_metadata[<span style="color:#e6db74">&#34;units&#34;</span>][<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    add_offset <span style="color:#f92672">=</span> data_field_metadata[<span style="color:#e6db74">&#34;add_offset&#34;</span>][<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ul_regex <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>compile(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;&#34;&#34;UpperLeftPointMtrs=\(
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                              (?P&lt;upper_left_x&gt;[+-]?\d+\.\d+)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                              ,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                              (?P&lt;upper_left_y&gt;[+-]?\d+\.\d+)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                              \)&#34;&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>        re<span style="color:#f92672">.</span>VERBOSE,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">match</span> <span style="color:#f92672">=</span> ul_regex<span style="color:#f92672">.</span>search(struct_metadata)
+</span></span><span style="display:flex;"><span>    upper_left_x <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>float64(<span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#e6db74">&#34;upper_left_x&#34;</span>))
+</span></span><span style="display:flex;"><span>    upper_left_y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>float64(<span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#e6db74">&#34;upper_left_y&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    lr_regex <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>compile(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;&#34;&#34;LowerRightMtrs=\(
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                              (?P&lt;lower_right_x&gt;[+-]?\d+\.\d+)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                              ,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                              (?P&lt;lower_right_y&gt;[+-]?\d+\.\d+)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                              \)&#34;&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>        re<span style="color:#f92672">.</span>VERBOSE,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">match</span> <span style="color:#f92672">=</span> lr_regex<span style="color:#f92672">.</span>search(struct_metadata)
+</span></span><span style="display:flex;"><span>    lower_right_x <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>float64(<span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#e6db74">&#34;lower_right_x&#34;</span>))
+</span></span><span style="display:flex;"><span>    lower_right_y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>float64(<span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#e6db74">&#34;lower_right_y&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>        _FillValue,
+</span></span><span style="display:flex;"><span>        scale_factor,
+</span></span><span style="display:flex;"><span>        valid_range,
+</span></span><span style="display:flex;"><span>        add_offset,
+</span></span><span style="display:flex;"><span>        upper_left_x,
+</span></span><span style="display:flex;"><span>        upper_left_y,
+</span></span><span style="display:flex;"><span>        lower_right_x,
+</span></span><span style="display:flex;"><span>        lower_right_y,
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><h3 id="transforming-the-data-array">Transforming the Data Array<a hidden class="anchor" aria-hidden="true" href="#transforming-the-data-array">#</a></h3>
+<p>The <code>treat_data_array()</code> function processes and cleans a numerical dataset by applying a series of transformations based on metadata attributes. It begins by ensuring that the input data, stored in a NumPy array, is converted to a floating-point format to facilitate precise calculations.</p>
+<p>Once the data is properly formatted, the function identifies and masks invalid values. It checks each element in the array against the provided valid range, marking any values that fall outside this range as invalid. Additionally, it looks for occurrences of the designated fill value, which represents missing or unusable data, and treats those as invalid as well. All such values are replaced with <code>NaN</code> to indicate their exclusion from further computations.</p>
+<p>After handling invalid values, the function applies a transformation to adjust the numerical values according to the provided offset and scale factor. The offset is first subtracted from each value, and then the result is divided by the scale factor, effectively converting raw stored values into meaningful, scaled data.</p>
+<p>To ensure that invalid data points are properly handled in subsequent operations, the function converts the processed array into a masked array, where all <code>NaN</code> values are explicitly marked as masked elements. Finally, the cleaned and transformed array is returned, ready for analysis or visualization with missing or out-of-range values properly excluded.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">treat_data_array</span>(
+</span></span><span style="display:flex;"><span>    data_array: np<span style="color:#f92672">.</span>ndarray,
+</span></span><span style="display:flex;"><span>    _FillValue: int,
+</span></span><span style="display:flex;"><span>    scale_factor: float,
+</span></span><span style="display:flex;"><span>    valid_range: list,
+</span></span><span style="display:flex;"><span>    add_offset: float,
+</span></span><span style="display:flex;"><span>) <span style="color:#f92672">-&gt;</span> np<span style="color:#f92672">.</span>ndarray:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    data_array <span style="color:#f92672">=</span> data_array<span style="color:#f92672">.</span>get()<span style="color:#f92672">.</span>astype(np<span style="color:#f92672">.</span>float64)
+</span></span><span style="display:flex;"><span>    invalid <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>logical_or(data_array <span style="color:#f92672">&lt;</span> valid_range[<span style="color:#ae81ff">0</span>], data_array <span style="color:#f92672">&gt;</span> valid_range[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>    invalid <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>logical_or(invalid, data_array <span style="color:#f92672">==</span> _FillValue)
+</span></span><span style="display:flex;"><span>    data_array[invalid] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>nan
+</span></span><span style="display:flex;"><span>    data_array <span style="color:#f92672">=</span> (data_array <span style="color:#f92672">-</span> add_offset) <span style="color:#f92672">/</span> scale_factor
+</span></span><span style="display:flex;"><span>    data_array <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>ma<span style="color:#f92672">.</span>masked_array(data_array, np<span style="color:#f92672">.</span>isnan(data_array))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> data_array
+</span></span></code></pre></div><h3 id="generating-the-polygon-data">Generating the Polygon Data<a hidden class="anchor" aria-hidden="true" href="#generating-the-polygon-data">#</a></h3>
+<p>To transform a gridded dataset into a set of spatially-referenced polygons, we use two functions: <code>create_polygon()</code> and <code>generate_polygon_data()</code>. The <code>create_polygon()</code> function is a helper function that constructs individual polygons for each pixel, while <code>generate_polygon_data()</code> orchestrates the process by applying <code>create_polygon()</code> across an entire dataset in parallel. We will first explore the <code>create_polygon()</code> function before moving on to <code>generate_polygon_data()</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> shapely.geometry <span style="color:#f92672">import</span> Polygon
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">create_polygon</span>(
+</span></span><span style="display:flex;"><span>    i: int,
+</span></span><span style="display:flex;"><span>    j: int,
+</span></span><span style="display:flex;"><span>    x_min: np<span style="color:#f92672">.</span>ndarray,
+</span></span><span style="display:flex;"><span>    x_max: np<span style="color:#f92672">.</span>ndarray,
+</span></span><span style="display:flex;"><span>    y_min: np<span style="color:#f92672">.</span>ndarray,
+</span></span><span style="display:flex;"><span>    y_max: np<span style="color:#f92672">.</span>ndarray,
+</span></span><span style="display:flex;"><span>) <span style="color:#f92672">-&gt;</span> Polygon:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Polygon(
+</span></span><span style="display:flex;"><span>        [
+</span></span><span style="display:flex;"><span>            (x_min[j], y_min[i]),  <span style="color:#75715e"># Lower-left</span>
+</span></span><span style="display:flex;"><span>            (x_max[j], y_min[i]),  <span style="color:#75715e"># Lower-right</span>
+</span></span><span style="display:flex;"><span>            (x_max[j], y_max[i]),  <span style="color:#75715e"># Upper-right</span>
+</span></span><span style="display:flex;"><span>            (x_min[j], y_max[i]),  <span style="color:#75715e"># Upper-left</span>
+</span></span><span style="display:flex;"><span>            (x_min[j], y_min[i]),  <span style="color:#75715e"># Close polygon</span>
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><p>The <code>create_polygon()</code> function constructs a bounding box polygon around a specific pixel in a gridded dataset. Given the row and column indices of the pixel, along with arrays that store the minimum and maximum x and y coordinates for the grid, the function determines the four corners of the pixel’s bounding box. It then uses these coordinates to create a closed polygon by connecting the lower-left, lower-right, upper-right, and upper-left corners before returning to the starting point. The result is a <code>shapely.geometry.Polygon</code> object that precisely outlines the area occupied by the pixel.</p>
+<p>With this helper function in place, we can now define <code>generate_polygon_data()</code>, which applies <code>create_polygon()</code> across an entire dataset to produce a collection of polygons representing the grid.</p>
+<p>The <code>generate_polygon_data()</code> function is responsible for transforming an entire 2D gridded dataset into a set of spatially-referenced polygons, each corresponding to a pixel in the grid. It begins by defining the spatial extent of the grid using the provided upper-left and lower-right coordinates. It then calculates a set of evenly spaced x and y coordinates that define the grid’s structure. Using these coordinates, the function computes the width and height of each pixel, which are used to determine the bounding box for each grid cell.</p>
+<p>With the grid structure established, the function generates a list of index pairs representing each pixel&rsquo;s position in the dataset. It then leverages parallel processing to efficiently convert each pixel into a polygon by calling the <code>create_polygon()</code> function for every index pair.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> joblib <span style="color:#f92672">import</span> Parallel, delayed
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_polygon_data</span>(
+</span></span><span style="display:flex;"><span>    data: np<span style="color:#f92672">.</span>ndarray,
+</span></span><span style="display:flex;"><span>    upper_left_x: float,
+</span></span><span style="display:flex;"><span>    upper_left_y: float,
+</span></span><span style="display:flex;"><span>    lower_right_x: float,
+</span></span><span style="display:flex;"><span>    lower_right_y: float,
+</span></span><span style="display:flex;"><span>    n_jobs: int <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>) <span style="color:#f92672">-&gt;</span> tuple:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Polygonizing data...&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ny, nx <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>shape
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Generate vectorized grid coordinates</span>
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>linspace(upper_left_x, lower_right_x, nx)
+</span></span><span style="display:flex;"><span>    y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>linspace(upper_left_y, lower_right_y, ny)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Compute pixel size</span>
+</span></span><span style="display:flex;"><span>    pixel_width <span style="color:#f92672">=</span> (lower_right_x <span style="color:#f92672">-</span> upper_left_x) <span style="color:#f92672">/</span> nx
+</span></span><span style="display:flex;"><span>    pixel_height <span style="color:#f92672">=</span> (lower_right_y <span style="color:#f92672">-</span> upper_left_y) <span style="color:#f92672">/</span> ny
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Compute lower-left and upper-right corners</span>
+</span></span><span style="display:flex;"><span>    x_min <span style="color:#f92672">=</span> x[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]  <span style="color:#75715e"># Shape (nx-1,)</span>
+</span></span><span style="display:flex;"><span>    y_min <span style="color:#f92672">=</span> y[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]  <span style="color:#75715e"># Shape (ny-1,)</span>
+</span></span><span style="display:flex;"><span>    x_max <span style="color:#f92672">=</span> x_min <span style="color:#f92672">+</span> pixel_width
+</span></span><span style="display:flex;"><span>    y_max <span style="color:#f92672">=</span> y_min <span style="color:#f92672">+</span> pixel_height
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Generate all (i, j) index pairs</span>
+</span></span><span style="display:flex;"><span>    index_pairs <span style="color:#f92672">=</span> [(i, j) <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(nx <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(ny <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Parallelized polygon creation</span>
+</span></span><span style="display:flex;"><span>    polygons <span style="color:#f92672">=</span> Parallel(n_jobs<span style="color:#f92672">=</span>n_jobs)(
+</span></span><span style="display:flex;"><span>        delayed(create_polygon)(i, j, x_min, x_max, y_min, y_max)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i, j <span style="color:#f92672">in</span> tqdm(index_pairs, total<span style="color:#f92672">=</span>len(index_pairs))
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Flatten the data array to match polygons</span>
+</span></span><span style="display:flex;"><span>    values <span style="color:#f92672">=</span> data[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, :<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>ravel()
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Done!&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> polygons, values
+</span></span></code></pre></div><h3 id="generating-the-geodataframe-and-reprojecting-the-data">Generating the GeoDataFrame and Reprojecting the Data<a hidden class="anchor" aria-hidden="true" href="#generating-the-geodataframe-and-reprojecting-the-data">#</a></h3>
+<p>The <code>create_geodataframe_and_reproject()</code> function takes a set of spatially-referenced polygons and their corresponding data values and converts them into a <code>GeoDataFrame</code>. It first assigns the polygons and values to a <code>GeoDataFrame</code> using a coordinate reference system (CRS) based on the Sinusoidal projection, which is the projection in which the MODIS data is in. Once the <code>GeoDataFrame</code> is created, the function reprojects the data into WGS84 (<code>EPSG:4326</code>).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">create_geodataframe_and_reproject</span>(
+</span></span><span style="display:flex;"><span>    polygons: list, values: list, data_field: str, polygon_to_check: bool <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>) <span style="color:#f92672">-&gt;</span> pd<span style="color:#f92672">.</span>DataFrame:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Creating GeoDataFrame and reprojecting...&#34;</span>)
+</span></span><span style="display:flex;"><span>    sinu_proj <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;+proj=sinu +R=6371007.181 +nadgrids=@null +wktext&#34;</span>
+</span></span><span style="display:flex;"><span>    gdf <span style="color:#f92672">=</span> gpd<span style="color:#f92672">.</span>GeoDataFrame({data_field: values, <span style="color:#e6db74">&#34;geometry&#34;</span>: polygons}, crs<span style="color:#f92672">=</span>sinu_proj)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Reproject from Sinusoidal to WGS84</span>
+</span></span><span style="display:flex;"><span>    gdf <span style="color:#f92672">=</span> gdf<span style="color:#f92672">.</span>to_crs(<span style="color:#e6db74">&#34;EPSG:4326&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> polygon_to_check:
+</span></span><span style="display:flex;"><span>        gdf <span style="color:#f92672">=</span> gdf[gdf<span style="color:#f92672">.</span>geometry<span style="color:#f92672">.</span>intersects(polygon_to_check)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Convert to WKT</span>
+</span></span><span style="display:flex;"><span>    gdf[<span style="color:#e6db74">&#34;wkt&#34;</span>] <span style="color:#f92672">=</span> gdf[<span style="color:#e6db74">&#34;geometry&#34;</span>]<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> geom: geom<span style="color:#f92672">.</span>wkt)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Done!&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> gdf[[data_field, <span style="color:#e6db74">&#34;wkt&#34;</span>]]
+</span></span></code></pre></div><p>If a filtering polygon is provided, the function checks which polygons intersect with it and retains only those, effectively reducing the dataset to a specific area of interest. Finally, it converts the geometries to Well-Known Text (WKT) format, making it easier to store or process further. The resulting <code>GeoDataFrame</code> contains two columns: one for the data values and another for the WKT representation of each polygon.</p>
+<h3 id="running-the-script">Running the Script<a hidden class="anchor" aria-hidden="true" href="#running-the-script">#</a></h3>
+<p>We&rsquo;re almost at the end! To run the script over a region, you can use your own WKT, a <code>Polygon</code>, a <code>MultiPolygon</code>, or a <code>GeoDataFrame</code>. Here&rsquo;s a short snippet to do so using a WKT over Tomé Açu, Pará, Brazil:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    download_dir <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;./data&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Define search parameters</span>
+</span></span><span style="display:flex;"><span>    short_name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MOD13Q1&#34;</span>
+</span></span><span style="display:flex;"><span>    version <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;061&#34;</span>  <span style="color:#75715e"># Latest version of MOD13Q1</span>
+</span></span><span style="display:flex;"><span>    start_date <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2020-01-01&#34;</span>
+</span></span><span style="display:flex;"><span>    end_date <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2020-12-31&#34;</span>
+</span></span><span style="display:flex;"><span>    count <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    data_field <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;250m 16 days NDVI&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Tomé Açu, Pará, Brazil</span>
+</span></span><span style="display:flex;"><span>    region <span style="color:#f92672">=</span> wkt<span style="color:#f92672">.</span>loads(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;POLYGON((-48.837 -1.83, -47.6921 -1.83, -47.6921 -3.3766, -48.837 -3.3766, -48.837 -1.83))&#34;</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    files <span style="color:#f92672">=</span> download_earthaccess(
+</span></span><span style="display:flex;"><span>        download_dir<span style="color:#f92672">=</span>download_dir,
+</span></span><span style="display:flex;"><span>        short_name<span style="color:#f92672">=</span>short_name,
+</span></span><span style="display:flex;"><span>        version<span style="color:#f92672">=</span>version,
+</span></span><span style="display:flex;"><span>        start_date<span style="color:#f92672">=</span>start_date,
+</span></span><span style="display:flex;"><span>        end_date<span style="color:#f92672">=</span>end_date,
+</span></span><span style="display:flex;"><span>        region<span style="color:#f92672">=</span>region,
+</span></span><span style="display:flex;"><span>        count<span style="color:#f92672">=</span>count,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    single_file <span style="color:#f92672">=</span> files[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> process_file(filepath<span style="color:#f92672">=</span>single_file, data_field<span style="color:#f92672">=</span>data_field, geometry<span style="color:#f92672">=</span>region)
+</span></span><span style="display:flex;"><span>    result<span style="color:#f92672">.</span>to_csv(<span style="color:#e6db74">&#34;output.csv&#34;</span>, index<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>)
+</span></span></code></pre></div><p>The result is a vector representation of the pixel data in <code>hdf</code> format.</p>
+<pre tabindex="0"><code>|    |   ndvi | wkt                                                                                                                                                                                                              | date       |
+|---:|-------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------|
+|  0 | 0.8683 | POLYGON ((-48.83714832414897 -1.829547822299263, -48.83506392825065 -1.829547822299263, -48.835120680657546 -1.8316311556324096, -48.8372050789782 -1.8316311556324096, -48.83714832414897 -1.829547822299263))  | 2020-09-13 |
+|  1 | 0.8683 | POLYGON ((-48.835063493911015 -1.829547822299263, -48.8329790980127 -1.829547822299263, -48.83303584799677 -1.8316311556324096, -48.83512024631741 -1.8316311556324096, -48.835063493911015 -1.829547822299263)) | 2020-09-13 |
+|  2 | 0.849  | POLYGON ((-48.83297866367305 -1.829547822299263, -48.830894267774745 -1.829547822299263, -48.83095101533598 -1.8316311556324096, -48.83303541365662 -1.8316311556324096, -48.83297866367305 -1.829547822299263)) | 2020-09-13 |
+|  3 | 0.7986 | POLYGON ((-48.8308938334351 -1.829547822299263, -48.828809437536776 -1.829547822299263, -48.82886618267518 -1.8316311556324096, -48.83095058099583 -1.8316311556324096, -48.8308938334351 -1.829547822299263))   | 2020-09-13 |
+|  4 | 0.7986 | POLYGON ((-48.82880900319715 -1.829547822299263, -48.826724607298836 -1.829547822299263, -48.82678135001441 -1.8316311556324096, -48.82886574833505 -1.8316311556324096, -48.82880900319715 -1.829547822299263)) | 2020-09-13 |
+</code></pre><p>The next image shows the vectorized pixels over Tomé Açu, Pará, Brazil, visualized in <a href="kepler.gl/demo">kepler.gl</a>.</p>
+<p><img loading="lazy" src="./images/pixels_vectors.png" alt=""  />
+</p>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>That&rsquo;s it for this post! You can find all the code needed to replicate this in my <a href="https://github.com/jeronimoluza/code_samples/ndvi">code samples repository</a>. It also includes scripts to run the routine for the same time window across different years and to download and process data for continuous time periods.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="//localhost:1313/">Jerónimo Luza</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
