@@ -416,4 +416,4 @@ The next image shows the vectorized pixels over Tomé Açu, Pará, Brazil, visua
 
 ## Conclusion
 
-That's it for this post! You can find all the code needed to replicate this in my [code samples repository](https://github.com/jeronimoluza/code_samples/ndvi). It also includes scripts to run the routine for the same time window across different years and to download and process data for continuous time periods.
+That's it for this post! You can find all the code needed to replicate this in my [code samples repository](https://github.com/jeronimoluza/code_samples/Python/ndvi). It also includes scripts to run the routine for the same time window across different years and to download and process data for continuous time periods.
