@@ -16,8 +16,8 @@ params:
 
   homeInfoParams:
     Content: 
-      A blog about geospatial data science focusing on remote sensing, programming, and cloud technologies.
-    Title: ""
+      "ESTO Y AQUELLO"
+    Title: "asdfasdfasdf"
     Photo: ""
 
   socialIcons:
