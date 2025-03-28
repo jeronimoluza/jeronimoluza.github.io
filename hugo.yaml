@@ -1,4 +1,4 @@
-bbbaseURL: 'https://jeronimoluza.github.io/'
+baseURL: 'https://jeronimoluza.github.io/'
 languageCode: 'en-us'
 title: 'Jerónimo Luza'
 theme: 'PaperMod'
@@ -17,7 +17,6 @@ params:
   homeInfoParams:
     Content: 
       A blog about geospatial data science focusing on remote sensing, programming, and cloud technologies.
-      <br />
     Title: ""
     Photo: ""
 
