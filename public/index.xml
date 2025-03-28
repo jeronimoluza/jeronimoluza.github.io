@@ -46,9 +46,7 @@
       <link>//localhost:1313/posts/processing-ndvi-data-in-python-transforming-multidimensional-arrays-to-polygons/</link>
       <pubDate>Sat, 15 Feb 2025 16:25:52 -0400</pubDate>
       <guid>//localhost:1313/posts/processing-ndvi-data-in-python-transforming-multidimensional-arrays-to-polygons/</guid>
-      <description>&lt;p&gt;A few weeks ago, I had the opportunity to work with NASA&amp;rsquo;s MODIS NDVI data. I developed a program that takes an area of interest, a start date, and an end date, then downloads the corresponding data from NASA archives. The program leverages parallel processing to efficiently convert NDVI raster data into vectorized polygons. In this blog post, I&amp;rsquo;ll share my approach and insights from the process.&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;./images/MOD13Q1.A2009257.h13v09.061.2021142080827.png&#34; alt=&#34;250m 16 days NDVI readings over northern Brazil&#34;  /&gt;
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;A few weeks ago, I had the opportunity to work with NASA&amp;rsquo;s MODIS NDVI data. Utilizing an &lt;a href=&#34;http://hdfeos.org/zoo/LPDAAC/MOD09GA.A2007268.h10v08.061.2021074090204.hdf.py&#34;&gt;example script&lt;/a&gt; from the &lt;a href=&#34;http://hdfeos.org/zoo/&#34;&gt;HDF - EOS Tools and Information Center&lt;/a&gt; as reference, I developed a program that takes an area of interest, a start date, and an end date, then downloads and process the corresponding NDVI data from NASA archives. The program leverages parallel processing to efficiently convert NDVI raster data into vectorized polygons. In this blog post, I&amp;rsquo;ll share my approach and insights from the process.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Extract Road Network Data for Administrative Regions With R</title>
