@@ -15,7 +15,7 @@ params:
   ShowCodeCopyButtons: true
 
   homeInfoParams:
-    Content: >
+    Content: 
       A blog about geospatial data science focusing on remote sensing, programming, and cloud technologies.
       <br />
     Title: ""
