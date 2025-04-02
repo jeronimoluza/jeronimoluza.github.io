@@ -147,7 +147,6 @@ AND
     st_line(step2.linestring),
     st_geometryfromtext(munips_tracts.tract_geometry)
     )
-
 WHERE
   st_geometrytype(
     st_intersection(
