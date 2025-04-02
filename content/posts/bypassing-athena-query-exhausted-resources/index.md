@@ -148,7 +148,13 @@ AND
     st_geometryfromtext(munips_tracts.tract_geometry)
     )
 
-WHERE st_geometrytype(st_intersection(st_polygon(munip_tracts.tract_geometry),st_line(step2.linestring))) <> 'ST_Point'
+WHERE
+  st_geometrytype(
+    st_intersection(
+      st_polygon(munip_tracts.tract_geometry),
+      st_line(step2.linestring)
+    )
+  ) <> 'ST_Point'
 ```
 
 This query breaks down the process of matching roads to different geographic areas step by step. First, it finds which roads intersect both a country and a province, making sure each road is linked to the right region. Then, it narrows things down by matching those roads to the municipalities inside each province.  
