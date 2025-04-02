@@ -92,12 +92,12 @@ WITH step1 as (
     st_intersects(
       st_line(roads.linestring),
       st_geometryfromtext(country_provinces.country_geometry)
-      )
+    )
   AND
     st_intersects(
       st_line(linestring),
       st_geometryfromtext(country_provinces.province_geometry)
-      )
+    )
 ),
 
 WITH step2 as (
@@ -116,12 +116,12 @@ WITH step2 as (
     st_intersects(
       st_line(step1.linestring),
       st_geometryfromtext(provinces_munip.province_geometry)
-      )
+    )
   AND
     st_intersects(
       st_line(step1.linestring),
       st_geometryfromtext(provinces_munips.munip_geometry)
-      )
+    )
 )
 
 SELECT 
@@ -146,13 +146,13 @@ AND
   st_intersects(
     st_line(step2.linestring),
     st_geometryfromtext(munips_tracts.tract_geometry)
-    )
+  )
 WHERE
   st_geometrytype(
     st_intersection(
       st_polygon(munip_tracts.tract_geometry),
       st_line(step2.linestring)
-    )
+  )
   ) <> 'ST_Point'
 ```
 
