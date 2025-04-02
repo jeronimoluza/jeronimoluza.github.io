@@ -13,13 +13,13 @@ This error can often be the result of a cartesian product when performing spatia
 
 To avoid this, it is essential to introduce intermediate steps before reaching the final desired result. Instead of performing a direct intersection between all geometries at once, segmenting the operations using progressively larger geometries can significantly reduce the cartesian product. For example, if we want to intersect roads with census tract data for an entire continent, the direct cartesian product between all roads and all census tracts would be computationally overwhelming. Instead, we can introduce intermediate steps:
 
-First, intersect the roads with country geometries.
+- First, intersect the roads with country geometries.
 
-Then, intersect the resulting roads with province/state geometries.
+- Then, intersect the resulting roads with province/state geometries.
 
-Next, intersect the resulting roads with municipality geometries.
+- Next, intersect the resulting roads with municipality geometries.
 
-Finally, intersect the resulting roads with the census tract geometries inside those municipalities.
+- Finally, intersect the resulting roads with the census tract geometries inside those municipalities.
 
 By structuring the operation into these intermediate steps and storing intermediate results in temporary tables, we can iteratively refine the spatial joins at progressively finer levels of detail. This segmentation prevents Athena from processing an excessive number of comparisons at once, allowing the query to remain within memory constraints.
 
