@@ -141,7 +141,7 @@ AND
   st_intersects(
     st_line(step2.linestring),
     st_geometryfromtext(munips_tracts.munip_geometry)
-    )
+  )
 AND
   st_intersects(
     st_line(step2.linestring),
@@ -152,7 +152,7 @@ WHERE
     st_intersection(
       st_polygon(munip_tracts.tract_geometry),
       st_line(step2.linestring)
-  )
+    )
   ) <> 'ST_Point'
 ```
 
