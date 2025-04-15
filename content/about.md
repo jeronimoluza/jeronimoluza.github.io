@@ -29,8 +29,8 @@ weight: 1
 - Typesetting Language: **Markdown**; LaTeX
 - Other: **Unix/Linux**; Bash; AWS
 
-### Contributions
+## Contributions
 
+- [geoterminal](https://github.com/jeronimoluza/geoterminal)
 - [EL-BID/UrbanPy](https://github.com/EL-BID/urbanpy)
 - [EL-BID/SentinelDownloader](https://github.com/EL-BID/SentinelDownloader)
-- [perrygeo/rasterstats](https://github.com/perrygeo/python-rasterstats)
