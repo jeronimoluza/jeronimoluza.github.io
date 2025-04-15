@@ -41,7 +41,7 @@ curl --output countries.zip https://datacatalogfiles.worldbank.org/ddh-published
 unzip countries.zip
 ```
 
-Checking the contents of the `WB_countries_Admin0_10m folder, we should see something like this:
+Checking the contents of the `WB_countries_Admin0_10m` folder, we should see something like this:
 
 
 
@@ -126,7 +126,7 @@ geoterminal "POLYGON((-4.32 51.96, 20.29 51.96, 20.29 41.46, -4.32 41.46, -4.32 
 
 ![Bounding Box in kepler.gl](./images/bounding_box.png)
 
-Simple, but nice. Moving on.
+Let's keep going!
 
 ### Transformations
 
@@ -173,6 +173,8 @@ geoterminal masked.geojson buffered.geojson --buffer-size 1000000
 
 Check the [documentation](https://jeronimoluza.github.io/geoterminal/) for all the supported operations.
 
+Now to the real thing:
+
 ### Chaining Operations
 
 geoterminal’s most powerful feature is its ability to chain operations. All flags (`--command`) are executed sequentially while transforming the `INPUT` into the `OUTPUT`.
@@ -203,4 +205,4 @@ geoterminal countries.geojson long_chain.geojson --query "WB_NAME in ('Germany',
 
 ### Conclusion
 
-That’s it for now! geoterminal is an open-source project still in development, contributions are always welcome!
+Thanks for reading! geoterminal is a work in progress, and like most open-source projects, it thrives on community input. It’s still under [active development](https://github.com/jeronimoluza/geoterminal), so if you have ideas, use cases, or want to help push the project forward—jump in!
