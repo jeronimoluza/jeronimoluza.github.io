@@ -13,6 +13,7 @@ params:
   math: true
   ShowReadingTime: true
   ShowCodeCopyButtons: true
+  social: true
 
   homeInfoParams:
     Content: 
