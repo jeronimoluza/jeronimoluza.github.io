@@ -74,11 +74,11 @@ The next timelapse depicting Kyiv City and Kyiv Oblast from November 2021 to May
 
 ![Kyiv, Ukraine Disruptions](./images/ukr/timelapse_AllAngle_Composite_Snow_Free.gif)
 
-<p style="text-align: center; font-style: italic">Figure 6: Nighttime lights over Kyiv City and Kyiv Oblast from November 2021 to May 2022, showing stable illumination until outages occur following conflict escalation in February 2022.</p>
+<p style="text-align: center; font-style: italic">Figure 7: Nighttime lights over Kyiv City and Kyiv Oblast from November 2021 to May 2022, showing stable illumination until outages occur following conflict escalation in February 2022.</p>
 
 ![Kyiv Lineplot](./images/ukr/lineplot_AllAngle_Composite_Snow_Free.png)
 
-<p style="text-align: center; font-style: italic">Figure 7: Mean and median nighttime light intensity for Kyiv City and Kyiv Oblast from November 2021 to May 2022, with a vertical line marking the start of the conflict and a clear decline in lights thereafter.</p>
+<p style="text-align: center; font-style: italic">Figure 8: Mean and median nighttime light intensity for Kyiv City and Kyiv Oblast from November 2021 to May 2022, with a vertical line marking the start of the conflict and a clear decline in lights thereafter.</p>
 
 ### Sudan's Armed Conflict Hits Al Khartum
 
@@ -86,11 +86,11 @@ The timelapse showing Al Khartoum’s nighttime lights from early 2023 highlight
 
 ![Al Khartum, Sudan Timelapse](./images/khartum/timelapse_khartum.gif)
 
-<p style="text-align: center; font-style: italic">Figure 8: Nighttime lights over Al Khartoum in early 2023, showing a decline in illumination following the Sudan conflict escalation and displacement crisis in April 2023.</p>
+<p style="text-align: center; font-style: italic">Figure 9: Nighttime lights over Al Khartoum in early 2023, showing a decline in illumination following the Sudan conflict escalation and displacement crisis in April 2023.</p>
 
 ![Al Khartum, Sudan Lineplot](./images/khartum/lineplot_khartum.png)
 
-<p style="text-align: center; font-style: italic">Figure 9: Mean and median nighttime light intensity in Al Khartoum from early 2023, with a drop starting April 2023, corresponding to the onset of conflict-related disruptions.</p>
+<p style="text-align: center; font-style: italic">Figure 10: Mean and median nighttime light intensity in Al Khartoum from early 2023, with a drop starting April 2023, corresponding to the onset of conflict-related disruptions.</p>
 
 # Gallery
 
