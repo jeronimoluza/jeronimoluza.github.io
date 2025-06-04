@@ -1,5 +1,5 @@
 +++
-title = "Run Large Language Models (LLMs) Locally with Ollama: Chat with the Models & Control Them using Python"
+title = "Run LLMs Locally with Ollama: Chat and Automate with Python"
 date = 2025-06-04T07:18:52-04:00
 math = true
 +++
