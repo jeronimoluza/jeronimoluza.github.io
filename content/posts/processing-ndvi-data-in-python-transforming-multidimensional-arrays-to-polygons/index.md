@@ -4,7 +4,7 @@ date = 2025-02-15T16:25:52-04:00
 math = true
 +++
 
-A few weeks ago, I had the opportunity to work with NASA's MODIS NDVI data. Utilizing an [example script](http://hdfeos.org/zoo/LPDAAC/MOD09GA.A2007268.h10v08.061.2021074090204.hdf.py) from the [HDF - EOS Tools and Information Center](http://hdfeos.org/zoo/) as reference, I developed a program that takes an area of interest, a start date, and an end date, then downloads and process the corresponding NDVI data from NASA archives. The program leverages parallel processing to efficiently convert NDVI raster data into vectorized polygons. In this blog post, I'll share my approach and insights from the process.
+A few weeks ago, I had the opportunity to work with NASA's MODIS NDVI data. Utilizing an [example script](http://hdfeos.org/zoo/LPDAAC/MOD09GA.A2007268.h10v08.061.2021074090204.hdf.py) from the [HDF - EOS Tools and Information Center](http://hdfeos.org/zoo/) as reference, I developed a program that takes an area of interest, a start date, and an end date, then downloads and processes the corresponding NDVI data from NASA archives. The program leverages parallel processing to efficiently convert NDVI raster data into vectorized polygons. In this blog post, I'll share my approach and insights from the process.
 
 ![250m 16 days NDVI readings over northern Brazil](./images/MOD13Q1.A2009257.h13v09.061.2021142080827.png)
 
